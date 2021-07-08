@@ -24,7 +24,9 @@ public class LyricsProviderManager {
     
     let session: URLSession = {
         let configuration = URLSessionConfiguration.default
-        configuration.waitsForConnectivity = true
+        if #available(iOS 11.0, *) {
+            configuration.waitsForConnectivity = true
+        }
         return URLSession(configuration: configuration)
     }()
     

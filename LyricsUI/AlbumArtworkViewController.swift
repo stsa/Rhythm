@@ -42,19 +42,21 @@ class AlbumArtworkViewController : UIViewController {
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        
-        let horizontalMargin = [view.safeAreaInsets.left, view.safeAreaInsets.right, view.layoutMargins.left, view.layoutMargins.right].max()!
-        let verticalMargin = max(view.safeAreaInsets.left, view.safeAreaInsets.right) > 16 ? 16 : horizontalMargin
-        
-        let maxWidth = view.bounds.width - horizontalMargin // only add margin for leading side
-        let maxHeight = view.safeAreaLayoutGuide.layoutFrame.height - verticalMargin * 2
-        
-        if maxHeight - maxWidth > 100 { // top edge
-            artworkView.frame = CGRect(x: horizontalMargin, y: view.safeAreaInsets.top + verticalMargin, width: maxWidth, height: maxWidth)
-        } else { // vertical center
-            let length = min(maxWidth, maxHeight)
-            artworkView.frame = CGRect(x: horizontalMargin, y: 0, width: length, height: length)
-            artworkView.center.y = view.safeAreaLayoutGuide.layoutFrame.midY
+
+        if #available(iOS 11.0, *) {
+            let horizontalMargin = [view.safeAreaInsets.left, view.safeAreaInsets.right, view.layoutMargins.left, view.layoutMargins.right].max()!
+            let verticalMargin = max(view.safeAreaInsets.left, view.safeAreaInsets.right) > 16 ? 16 : horizontalMargin
+
+            let maxWidth = view.bounds.width - horizontalMargin // only add margin for leading side
+            let maxHeight = view.safeAreaLayoutGuide.layoutFrame.height - verticalMargin * 2
+
+            if maxHeight - maxWidth > 100 { // top edge
+                artworkView.frame = CGRect(x: horizontalMargin, y: view.safeAreaInsets.top + verticalMargin, width: maxWidth, height: maxWidth)
+            } else { // vertical center
+                let length = min(maxWidth, maxHeight)
+                artworkView.frame = CGRect(x: horizontalMargin, y: 0, width: length, height: length)
+                artworkView.center.y = view.safeAreaLayoutGuide.layoutFrame.midY
+            }
         }
     }
     
@@ -97,10 +99,10 @@ class AlbumArtworkViewController : UIViewController {
         
         AlbumArtworkViewController.urlSession.dataTask(with: artworkURL) { [weak self] data, response, error in
             guard let self = self,
-                let data = data,
-                let response = response as? HTTPURLResponse,
-                response.statusCode == 200,
-                let image = UIImage(data: data) else { return }
+                  let data = data,
+                  let response = response as? HTTPURLResponse,
+                  response.statusCode == 200,
+                  let image = UIImage(data: data) else { return }
             DispatchQueue.main.async {
                 guard mediaItem == self.mediaItem else { return }
                 self.artworkView.artwork = image
@@ -110,7 +112,9 @@ class AlbumArtworkViewController : UIViewController {
     
     private static let urlSession: URLSession = {
         let configuration = URLSessionConfiguration.default
-        configuration.waitsForConnectivity = true
+        if #available(iOS 11.0, *) {
+            configuration.waitsForConnectivity = true
+        }
         return URLSession(configuration: configuration)
     }()
     

@@ -41,7 +41,9 @@ class AppDelegate : UIResponder, UIApplicationDelegate {
             accessSettingsController?.view.isHidden = false
             accessSettingsController?.title = NSLocalizedString("permissionSettings", comment: "")
             accessSettingsController?.navigationController?.isToolbarHidden = true
-            accessSettingsController?.navigationController?.navigationBar.prefersLargeTitles = true
+            if #available(iOS 11.0, *) {
+                accessSettingsController?.navigationController?.navigationBar.prefersLargeTitles = true
+            }
         }
         accessSettingsController.completionHandler = { [weak self] in
             LocationManager.shared.start()
@@ -77,8 +79,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate {
     
     private func handleApplicationURL(_ url: URL) {
         if let navigationController = mainWindow.rootViewController as? UINavigationController,
-            let lyricsController = navigationController.viewControllers.first as? LyricsContainerViewController,
-            lyricsController.view.window != nil
+           let lyricsController = navigationController.viewControllers.first as? LyricsContainerViewController,
+           lyricsController.view.window != nil
         {
             _ = lyricsController.handleApplicationURL(url)
         } else {

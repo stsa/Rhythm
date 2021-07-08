@@ -80,7 +80,13 @@ public class LyricsTableViewController : UITableViewController {
         
         performIfViewSizeChanged {
             tableView.tableFooterView = nil
-            tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: view.bounds.height / 2 - view.safeAreaInsets.bottom))
+
+            if #available(iOS 11.0, *) {
+                tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: view.bounds.height / 2 - view.safeAreaInsets.bottom))
+            } else {
+                tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: view.bounds.height / 2))
+            }
+
             
             if let indexPath = tableView.indexPathForSelectedRow {
                 tableView.scrollToRow(at: indexPath, at: .middle, animated: false)

@@ -37,7 +37,9 @@ public class LyricsContainerViewController : UIViewController {
         didSet {
             guard showsPlaybackProgressBar != oldValue else { return }
             [artworkViewController, tableViewController].forEach {
-                $0.additionalSafeAreaInsets.bottom = showsPlaybackProgressBar ? progressView.intrinsicContentSize.height : 0
+                if #available(iOS 11.0, *) {
+                    $0.additionalSafeAreaInsets.bottom = showsPlaybackProgressBar ? progressView.intrinsicContentSize.height : 0
+                }
             }
             progressView.isHidden = !showsPlaybackProgressBar
         }
@@ -81,11 +83,13 @@ public class LyricsContainerViewController : UIViewController {
         titleObserver = tableViewController.observe(\.title, options: .new) { [weak self] _, change in
             self?.title = change.newValue ?? ""
         }
-        
-        [artworkViewController, tableViewController].forEach {
-            $0.additionalSafeAreaInsets.bottom = showsPlaybackProgressBar ? progressView.intrinsicContentSize.height : 0
-            view.addSubview($0.view)
-            $0.view.translatesAutoresizingMaskIntoConstraints = false
+
+        if #available(iOS 11.0, *) {
+            [artworkViewController, tableViewController].forEach {
+                $0.additionalSafeAreaInsets.bottom = showsPlaybackProgressBar ? progressView.intrinsicContentSize.height : 0
+                view.addSubview($0.view)
+                $0.view.translatesAutoresizingMaskIntoConstraints = false
+            }
         }
         
         constraintsForRegularLayout = [
@@ -112,8 +116,12 @@ public class LyricsContainerViewController : UIViewController {
         NSLayoutConstraint.activate([
             progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            progressView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
+        if #available(iOS 11.0, *) {
+            NSLayoutConstraint.activate([
+                progressView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            ])
+        }
         progressView.isHidden = !showsPlaybackProgressBar
         
         navigationItem.leftBarButtonItem = moreButtonItem
@@ -184,7 +192,7 @@ public class LyricsContainerViewController : UIViewController {
     
     private func updateLayout() {
         // 480: minimum point width on iPhone Landscape mode (iPhone 4s)
-        if view.bounds.width < 480 || traitCollection.horizontalSizeClass == .compact && traitCollection.preferredContentSizeCategory.isAccessibilityCategory {
+        if view.bounds.width < 480 || traitCollection.horizontalSizeClass == .compact {
             // compact layout
             artworkViewController.updatesArtwork = false
             NSLayoutConstraint.deactivate(constraintsForRegularLayout)
@@ -272,7 +280,12 @@ public class LyricsContainerViewController : UIViewController {
             buttonWidths = 34 * 5 + 14 * 2
         }
         let centralItemSpacing: CGFloat = view.bounds.width <= 320 ? 8 : 32
-        toolbarFixedSpaceItem.width = (view.safeAreaLayoutGuide.layoutFrame.width - buttonWidths - centralItemSpacing * 2) / 2
+        if #available(iOS 11.0, *) {
+            toolbarFixedSpaceItem.width = (view.safeAreaLayoutGuide.layoutFrame.width - buttonWidths - centralItemSpacing * 2) / 2
+        } else {
+            // To Do
+        }
+
     }
 }
 
@@ -415,7 +428,7 @@ extension LyricsContainerViewController {
         let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
         
         if let query = urlComponents?.queryItems?.first(where: { $0.name == DeepLink.queryName }),
-            let queryValue = query.value
+           let queryValue = query.value
         {
             switch queryValue {
             case DeepLink.QueryValue.showActions:

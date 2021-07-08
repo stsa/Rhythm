@@ -62,7 +62,11 @@ public class LyricsNotificationController : NSObject {
         center.delegate = self
         
         let category: UNNotificationCategory = {
-            let options: UNNotificationCategoryOptions = [.hiddenPreviewsShowTitle, .hiddenPreviewsShowSubtitle]
+            var options: UNNotificationCategoryOptions = []
+
+            if #available(iOS 11.0, *) {
+                options = [.hiddenPreviewsShowTitle, .hiddenPreviewsShowSubtitle]
+            }
             
             if #available(iOS 12.0, *) {
                 return UNNotificationCategory(

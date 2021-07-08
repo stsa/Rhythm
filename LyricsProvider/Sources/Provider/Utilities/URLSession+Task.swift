@@ -63,7 +63,8 @@ extension URLSession {
         var progress: Progress?
         let task = dataTask(with: url, completionHandler: completionHandler)
         task.resume()
-        if #available(macOSApplicationExtension 10.13,
+        if #available(iOS 11.0,
+            macOSApplicationExtension 10.13,
             iOSApplicationExtension 11.0,
             tvOSApplicationExtension 11.0,
             watchOSApplicationExtension 4.0, *) {
@@ -83,7 +84,8 @@ extension URLSession {
         var progress: Progress?
         let task = dataTask(with: request, completionHandler: completionHandler)
         task.resume()
-        if #available(macOSApplicationExtension 10.13,
+        if #available(iOS 11.0,
+            macOSApplicationExtension 10.13,
             iOSApplicationExtension 11.0,
             tvOSApplicationExtension 11.0,
             watchOSApplicationExtension 4.0, *) {
@@ -116,7 +118,8 @@ extension URLSession {
             }
         }
         defer { task.resume() }
-        if #available(macOSApplicationExtension 10.13,
+        if #available(iOS 11.0,
+            macOSApplicationExtension 10.13,
             iOSApplicationExtension 11.0,
             tvOSApplicationExtension 11.0,
             watchOSApplicationExtension 4.0, *) {
@@ -149,7 +152,8 @@ extension URLSession {
             }
         }
         defer { task.resume() }
-        if #available(macOSApplicationExtension 10.13,
+        if #available(iOS 11.0,
+            macOSApplicationExtension 10.13,
             iOSApplicationExtension 11.0,
             tvOSApplicationExtension 11.0,
             watchOSApplicationExtension 4.0, *) {

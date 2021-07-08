@@ -67,12 +67,16 @@ class LyricsTableViewCell : UITableViewCell {
             contentView.addSubview(highlightView)
             
             highlightView.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                highlightView.leadingAnchor.constraint(equalToSystemSpacingAfter: contentView.safeAreaLayoutGuide.leadingAnchor, multiplier: 1),
-                highlightView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),
-                contentView.safeAreaLayoutGuide.trailingAnchor.constraint(equalToSystemSpacingAfter: highlightView.trailingAnchor, multiplier: 1),
-                highlightView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor),
-            ])
+
+            if #available(iOS 11.0, *) {
+                NSLayoutConstraint.activate([
+                    highlightView.leadingAnchor.constraint(equalToSystemSpacingAfter: contentView.safeAreaLayoutGuide.leadingAnchor, multiplier: 1),
+                    highlightView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),
+                    contentView.safeAreaLayoutGuide.trailingAnchor.constraint(equalToSystemSpacingAfter: highlightView.trailingAnchor, multiplier: 1),
+                    highlightView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor),
+                ])
+            }
+
             self.highlightView = highlightView
         }
         else if let highlightView = highlightView {
